@@ -2,11 +2,11 @@ from tkinter import *
 from tkinter import ttk
 
 #The main window where selection will be made 
-class Selection:
+class Selection: 
     def __init__(self, master):
         self.master = master
         
-        master.title('Converter Deluxe')
+        master.title('Converter Deluxe') #test comment
 
         mainframe = ttk.Frame(self.master, padding='80 70 110 100')
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
