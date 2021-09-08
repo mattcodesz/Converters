@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 
+#The main window where selection will be made
 class Selection:
     def __init__(self, master):
         self.master = master
@@ -13,12 +14,14 @@ class Selection:
         self.master.rowconfigure(0, weight=1)
 
         ttk.Button(mainframe, text='Select', command=self.new_window).grid(column=1, row=2, sticky=(W, E), pady=20)
+        #TODO: Create an option list
         ttk.Label(mainframe, text='Filler').grid(column=1, row=1, sticky=(W, E), pady=20)
 
+    #TODO: chooses what converter to open based on selection
     def new_window(self):
         self.master.destroy() # close the current window
         self.master = Tk() # create another Tk instance
-        self.app = FeetToMeters(self.master) # create Demo2 window
+        self.app = FeetToMeters(self.master) # create FeetToMeters window
         self.master.mainloop()
 
 class FeetToMeters:
@@ -26,6 +29,7 @@ class FeetToMeters:
     def __init__(self, master):
         #set up the window and give it a title
         self.master = master
+        #setting the default selection value
         self.opt = 'Feet'
         master.title('Feet to Meters Converter')
 
@@ -45,8 +49,9 @@ class FeetToMeters:
 
         #all the widgets contained in the frame and their position in the grid
         self.feet = StringVar()
-        feet_entry = ttk.Entry(self.mainframe, width=7, textvariable=self.feet)
-        feet_entry.grid(column=2, row=1, sticky=(W, E))
+        self.feet_entry = ttk.Entry(self.mainframe, width=7, textvariable=self.feet)
+        self.feet_entry.focus()
+        self.feet_entry.grid(column=2, row=1, sticky=(W, E))
 
         self.meters = StringVar()
         ttk.Label(self.mainframe, textvariable=self.meters).grid(column=2, row=2, sticky=(W, E))
@@ -65,14 +70,14 @@ class FeetToMeters:
             child.grid_configure(padx=5, pady=5)
 
         #puts cursor in field so you dont have to click on it
-        feet_entry.focus()
+        self.feet_entry.focus()
 
         #pressing enter has the same function as clicking calculate
         self.master.bind("<Return>", self.calculate)
 
     #calculate function
     def calculate(self, *args):
-        print(self.opt)
+        # for going feet to meters
         if self.opt == 'Feet':
             try:
                 #gets the StringVar() feet and converts to a float
@@ -82,6 +87,7 @@ class FeetToMeters:
                 self.meters.set(conversion)
             except ValueError:
                 pass
+        #For going meters to feet
         else:
             try:
                 value = float(self.feet.get())
@@ -90,17 +96,20 @@ class FeetToMeters:
             except ValueError:
                 pass
     
+    #updates the resulting text when selecting an option
     def func(self, value):
+        #sets the value
         self.opt=value
         if self.opt == 'Feet':
             ttk.Label(self.mainframe, text='Meters', width=15).grid(column=3, row=2, sticky=W)
         else: 
             ttk.Label(self.mainframe, text='Feet', width=15).grid(column=3, row=2, sticky=W)
     
+    #for going back to the main window
     def new_window(self):
         self.master.destroy() # close the current window
         self.master = Tk() # create another Tk instance
-        self.app = Selection(self.master) # create Demo2 window
+        self.app = Selection(self.master) # create Selection window
         self.master.mainloop()
 
 def main(): 
