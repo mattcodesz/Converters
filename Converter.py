@@ -1,11 +1,21 @@
 from tkinter import *
 from tkinter import ttk
 
+
 #The main window where selection will be made
 class Selection:
     def __init__(self, master):
         self.master = master
+        self.opt = "FeetToMeters"
         
+        OPTIONS =[
+            "FeetToMeters",
+            "FeetToMeters",
+            "WeightConverter"
+        ]
+        variable = StringVar(master)
+        variable.set(OPTIONS[0])
+
         master.title('Converter Deluxe') #Test comment again
 
         mainframe = ttk.Frame(self.master, padding='80 70 110 100')
@@ -15,17 +25,24 @@ class Selection:
 
         ttk.Button(mainframe, text='Select', command=self.new_window).grid(column=1, row=2, sticky=(W, E), pady=20)
         #TODO: Create an option list
-        ttk.Label(mainframe, text='Filler').grid(column=1, row=1, sticky=(W, E), pady=20)
+        ttk.OptionMenu(mainframe, variable, *OPTIONS, command=self.func).grid(column=3, row=1, sticky=W)
 
     #TODO: chooses what converter to open based on selection
     def new_window(self):
         self.master.destroy() # close the current window
         self.master = Tk() # create another Tk instance
-        self.app = FeetToMeters(self.master) # create FeetToMeters window
-        self.master.mainloop()
+        if self.opt == 'FeetToMeters':
+            self.app = FeetToMeters(self.master) # create FeetToMeters window
+            self.master.mainloop()
+        elif self.opt == 'WeightConverter':
+            self.app = FeetToMeters(self.master) # create FeetToMeters window
+            self.master.mainloop()
+
+    def func(self,value):
+        #sets the value
+        self.opt=value
 
 class FeetToMeters:
-
     def __init__(self, master):
         #set up the window and give it a title
         self.master = master
@@ -61,7 +78,7 @@ class FeetToMeters:
         ttk.Button(self.mainframe, text='Back', command=self.new_window).grid(column=1, row=3, sticky=W)
 
         
-        info = ttk.OptionMenu(self.mainframe, variable, *OPTIONS, command=self.func).grid(column=3, row=1, sticky=W)
+        ttk.OptionMenu(self.mainframe, variable, *OPTIONS, command=self.func).grid(column=3, row=1, sticky=W)
         ttk.Label(self.mainframe, text='is equivalent to:').grid(column=1, row=2, sticky=E)
         ttk.Label(self.mainframe, text='Meters').grid(column=3, row=2, sticky=W)
 
@@ -111,6 +128,22 @@ class FeetToMeters:
         self.master = Tk() # create another Tk instance
         self.app = Selection(self.master) # create Selection window
         self.master.mainloop()
+
+class WeightConverter:
+    def __init__(self, master):
+        #set up the window and give it a title
+        self.master = master
+        #setting the default selection value
+        self.opt = 'Pounds'
+        master.title('Pounds to Kilogram Converter')
+
+        OPTIONS =[
+            "Pounds",
+            "Kilograms",
+            "Pounds"
+        ]
+        variable = StringVar(master)
+        variable.set(OPTIONS[0])
 
 def main(): 
     root = Tk()
