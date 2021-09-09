@@ -11,7 +11,8 @@ class Selection:
         OPTIONS =[
             "FeetToMeters",
             "FeetToMeters",
-            "WeightConverter"
+            "WeightConverter",
+            "DistanceConverter"
         ]
         variable = StringVar(master)
         variable.set(OPTIONS[0])
@@ -36,6 +37,9 @@ class Selection:
             self.master.mainloop()
         elif self.opt == 'WeightConverter':
             self.app = WeightConverter(self.master) # create WeightConverter window
+            self.master.mainloop()
+        elif self.opt == 'DistanceConverter':
+            self.app = DistanceConverter(self.master) # create WeightConverter window
             self.master.mainloop()
 
     def func(self,value):
@@ -204,6 +208,89 @@ class WeightConverter:
             ttk.Label(self.mainframe, text='Kilograms', width=15).grid(column=3, row=2, sticky=W, padx=5, pady=5)
         else: 
             ttk.Label(self.mainframe, text='Pounds', width=15).grid(column=3, row=2, sticky=W, padx=5, pady=5)
+    
+    #for going back to the main window
+    def new_window(self):
+        self.master.destroy() # close the current window
+        self.master = Tk() # create another Tk instance
+        self.app = Selection(self.master) # create Selection window
+        self.master.mainloop()
+
+class DistanceConverter:
+    def __init__(self, master):
+        #set up the window and give it a title
+        self.master = master
+        #setting the default selection value
+        self.opt = 'Miles'
+        master.title('Distance Converter')
+
+        OPTIONS =[
+            "Miles",
+            "Kilometers",
+            "Miles"
+        ]
+        variable = StringVar(master)
+        variable.set(OPTIONS[0])
+
+        self.mainframe = ttk.Frame(self.master, padding='15 30 45 120')
+        self.mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+        self.master.columnconfigure(0, weight=1)
+        self.master.rowconfigure(0, weight=1)
+
+        self.dist = StringVar()
+        self.dist_entry = ttk.Entry(self.mainframe, width=7, textvariable=self.dist)
+        self.dist_entry.focus()
+        self.dist_entry.grid(column=2, row=1, sticky=(W, E))
+
+        self.conv = StringVar()
+        ttk.Label(self.mainframe, textvariable=self.conv).grid(column=2, row=2, sticky=(W, E))
+
+        ttk.Button(self.mainframe, text='Calculate', command=self.calculate).grid(column=3, row=3, sticky=W)
+
+        ttk.Button(self.mainframe, text='Back', command=self.new_window).grid(column=1, row=3, sticky=W)
+
+        ttk.OptionMenu(self.mainframe, variable, *OPTIONS, command=self.func).grid(column=3, row=1, sticky=W)
+        ttk.Label(self.mainframe, text='is equivalent to:').grid(column=1, row=2, sticky=E)
+        ttk.Label(self.mainframe, text='Kilometers').grid(column=3, row=2, sticky=W)
+
+        #shortcut for adding padding to all children rather than putting it in the grid method for each one
+        for child in self.mainframe.winfo_children():
+            child.grid_configure(padx=5, pady=5)
+
+        #puts cursor in field so you dont have to click on it
+        self.dist_entry.focus()
+
+        #pressing enter has the same function as clicking calculate
+        self.master.bind("<Return>", self.calculate)
+
+    def calculate(self, *args):
+        # for going miles to kilometers
+        if self.opt == 'Miles':
+            try:
+                #gets the StringVar() feet and converts to a float
+                value = float(self.dist.get())
+                #sets meters variable and does the calculation
+                conversion = float(round((1.60934 * value), 3))
+                self.conv.set(conversion)
+            except ValueError:
+                pass
+        #For going kilometers to miles
+        else:
+            try:
+                value = float(self.dist.get())
+                conversion = float(round((value / 1.60934), 3))
+                self.conv.set(conversion)
+            except ValueError:
+                pass
+    
+    #updates the resulting text when selecting an option
+    def func(self, value):
+        #sets the value
+        self.opt=value
+        if self.opt == 'Miles':
+            ttk.Label(self.mainframe, text='Kilograms', width=15).grid(column=3, row=2, sticky=W, padx=5, pady=5)
+        else: 
+            ttk.Label(self.mainframe, text='Miles', width=15).grid(column=3, row=2, sticky=W, padx=5, pady=5)
     
     #for going back to the main window
     def new_window(self):
